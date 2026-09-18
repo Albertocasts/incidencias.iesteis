@@ -1,3 +1,5 @@
+
+
 # Manual de instalación de la aplicación web
 
 
@@ -27,5 +29,44 @@ Almacena, procesa y entrega los componentes de un sitio web a los usuarios a tra
     - Markdown all in one
 4. Instalar apache
  'sudo apt install apache2'
-5. Cambiar permisos de la carpeta
+5. Cambiar permisos de la carpeta /var/www/html
+``` bash
+sudo chown -R $USER:$USER /var/www/html
+sudo chmod -R u=rwX,go=rx /var/www/html
+```
+6. Instalar mysql server
+``` bash
+sudo apt install mysql-server
+```
+7. Configuracion mysql
+``` mysql
+create database incidencias;
+create user 'incidencias'@'localhost' identified by 'incidencias';
+grant all privileges on incidencias.* to 'incidencias'@'localhost';
+flush privileges;
+```
+8. Creamos tablas y añadimos datos
+```mysql
+create table registro( id int auto_increment primary key, aula varchar(30), descripcion text, usuario varchar(20), estado varchar(30) );
+insert into registro (aula, descripcion, usuario, estado) values ('Taller1', 'PC 24 no arranca', 'albertocast', 'ABIERTA'), ('Taller1', 'PC 24 no arranca', 'albertocast', 'ABIERTA'), ('Taller1', 'Iago no se calla', 'albertocast', 'ABIERTA');
 
+```
+
+## Configuración de github
+
+1. Crear repositorio local, añadir archivos y commit
+ ```bash
+get init
+git add .
+git commit -n "comentario"
+```
+
+2. Crear cuenta github, crear repositorio github 
+
+
+3. Conectar repositorio local en remoto
+```bash
+git remote add origin https://github.com/Albertocasts/incidencias.iesteis.git
+git branch -M main
+git push -u origin main
+```
