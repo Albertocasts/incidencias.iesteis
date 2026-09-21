@@ -70,3 +70,85 @@ git remote add origin https://github.com/Albertocasts/incidencias.iesteis.git
 git branch -M main
 git push -u origin main
 ```
+
+
+## Python
+1. Instalar python
+``` bash
+sudo apt install python3-pip python3-venv -y
+```
+
+2. Conectamos y activamos el entorno virtual
+``` bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. Instalar flask, conector de base de datos, comporbar y guardar las dependencias
+``` bash
+pip install flask
+pip install mysql-connector-python
+pip list
+pip freeze > requirement.txt
+```
+4. Creamos un fichero app.py en la carpeta principal del proyecto
+```bash
+python3 app.py
+```
+ -Esto crea un servidor web alternativo lebavntado en localhost en el puerto 5000.Se podria poner Apache de intermediario utilzando un proxy
+ -Habria que modificar etc/apache2/sites-available/incidencias.ies.teis.conf añadiendo esto dentro del virtualhost:
+```
+ProxxyPass / https://127.0.0.1:5000/
+ProxxyPassReverse / https://127.0.0.1:5000/
+```
+-Y activar los modulos
+```bash
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo systemctl restart apache2
+```
+
+```
+5. Comprobamos abriendo http://localhost:5000/
+```
+
+
+## Migración del formulario a Python/Flask
+
+1. Creamos una carpeta templates y movemos ahi el index.html
+2. Modificamos app.py
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def inicio():
+    return render_template("index.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+```
+3. Comprobamos abriendo http://localhost:5000/ . El formulario lo devuelve flask
+
+## Recibir los datos del formulario
+
+1. Vamos a app.py y modificamos la primera línea añadiendo request:
+```python
+from flask import Flask, render_template, request
+```
+2. Añadimos una ruta en app.py para recibir los datos del formulario:
+```python
+@app.route("/incidencias", methods=["POST"])
+def crear_incidencia():
+    aula=request.form["Aula"]
+    usuario=request.form["Usuario"]
+    descripcion=request.form["Descripcion"]
+
+    print("Aula:" + aula)
+    print("Usuario:" + usuario)
+    print("Descripcion:" + descripcion)
+    return "Incidencia recibida"
+´´´
+
